@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/kjirou/daifugo-core/issues"
   },
-  "homepage": "https://github.com/kjirou/daifugo-core#readme"
+  "homepage": "https://github.com/kjirou/daifugo-core#readme",
+  "engines": {
+    "node": ">=12"
+  }
 }
