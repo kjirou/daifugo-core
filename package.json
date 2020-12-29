@@ -1,0 +1,19 @@
+{
+  "name": "daifugo-core",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kjirou/daifugo-core.git"
+  },
+  "author": "kjirou",
+  "license": "SEE LICENSE IN https://github.com/kjirou/daifugo-core/blob/main/LICENSE",
+  "bugs": {
+    "url": "https://github.com/kjirou/daifugo-core/issues"
+  },
+  "homepage": "https://github.com/kjirou/daifugo-core#readme"
+}
