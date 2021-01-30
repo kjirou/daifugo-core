@@ -7,12 +7,11 @@ import {
   resetStock,
 } from '../index'
 import {
+  CardCombination,
   Game,
   areCardsEqual,
   createGame,
   createPlayer,
-  CardCombination,
-  getPassedPlayerIndexes,
 } from '../utils'
 
 describe('src/index', () => {
