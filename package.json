@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "$(npm bin)/tsc",
-    "test": "$(npm bin)/jest"
+    "test": "$(npm bin)/jest",
+    "test-on-ci": "$(npm bin)/jest --verbose"
   },
   "repository": {
     "type": "git",
