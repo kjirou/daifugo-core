@@ -2,14 +2,14 @@ import * as daifugo from '../../src/index'
 
 const keypress = require('keypress')
 
-type KepressKey = {
+type KeypressKey = {
   ctrl: boolean,
   name: string,
 }
 
 let game = daifugo.utils.createGame()
 
-const handleKeypress = (ch: string, key: KepressKey): void => {
+const handleKeypress = (ch: string, key: KeypressKey): void => {
   if (key.ctrl && key.name == 'c' || key.ctrl && key.name == 'd' || key.ctrl && key.name == 'q') {
     process.exit(0)
   }
