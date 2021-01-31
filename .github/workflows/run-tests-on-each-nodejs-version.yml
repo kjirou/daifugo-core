@@ -1,4 +1,4 @@
-name: run-tests-on-each-nodejs-version
+name: Run tests on each Node.js version
 on: [push]
 jobs:
   run-tests:
