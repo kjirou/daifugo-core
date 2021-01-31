@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "$(npm bin)/tsc",
-    "run-example:game": "$(npm bin)/ts-node ./examples/src/game.ts",
+    "example:game": "$(npm bin)/ts-node ./examples/src/game.ts",
     "test": "$(npm bin)/jest",
     "test-on-ci": "$(npm bin)/jest --verbose"
   },
