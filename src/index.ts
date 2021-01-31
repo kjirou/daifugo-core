@@ -17,6 +17,8 @@ import {
   areCardsEqual,
 } from './utils'
 
+export * as utils from './utils'
+
 
 //
 // Reducers

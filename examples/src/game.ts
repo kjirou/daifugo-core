@@ -1,3 +1,4 @@
 import * as daifugo from '../../src/index'
 
-console.log(daifugo)
+let game = daifugo.utils.createGame()
+console.log(game)
