@@ -1,3 +1,3 @@
 # daifugo-core
 
-![GitHub Actions Status Badge](https://github.com/kjirou/daifugo-core/workflows/.github/workflows/run-tests-on-each-nodejs-version.yml/badge.svg)
+![Run tests on each Node.js version](https://github.com/kjirou/daifugo-core/workflows/Run%20tests%20on%20each%20Node.js%20version/badge.svg)
