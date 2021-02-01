@@ -9,13 +9,16 @@ import {
   canPutDownCardCombination,
   cardRanks,
   cardSuits,
+  getLayoutedCardCombination,
   getPassedPlayerIndexes,
   isFirstGame,
   removeCards,
-  suffleArray,
+  shuffleArray,
   parseCardsToCardCombinations,
-  areCardsEqual,
+  isGameFinished,
 } from './utils'
+
+export * as utils from './utils'
 
 
 //
@@ -63,7 +66,7 @@ export const resetStock = (game: Game): Game => {
   }
   return {
     ...game,
-    stock: suffleArray<Card>(stock, game.settings.getRandom),
+    stock: shuffleArray<Card>(stock, game.settings.getRandom),
   }
 }
 
@@ -130,7 +133,6 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
     throw new Error('"playerIndexOnTurn" is undefined.')
   }
 
-  const playerOnTurn = game.players[playerIndexOnTurn]
   const inGamePlayerIndexes = game.players.reduce<number[]>((acc, player, index) => {
     return player.ranking > 0 ? acc : [...acc, index]
   }, [])
@@ -145,30 +147,25 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
   let newRounds: Round[] = game.rounds.slice()
 
   // Does the current player have that card combination?
-  const selectableCardCombinations: CardCombination[] = parseCardsToCardCombinations(playerOnTurn.hand)
+  const selectableCardCombinations: CardCombination[] = parseCardsToCardCombinations(newPlayers[playerIndexOnTurn].hand)
   if (cardCombination !== undefined) {
     if (!selectableCardCombinations.some(e => areCardCombinationsEqual(e, cardCombination))) {
       throw new Error('The current player does not have the card combination.')
     }
   }
 
-  // Get layouted card combination.
-  const lastSubmittedTurn: Turn | undefined = newRounds[newRounds.length - 1].turns
-    .slice()
-    .reverse()
-    .find(e => e.cardCombination)
-  const layoutedCardCombination: CardCombination | undefined =
-    lastSubmittedTurn ? lastSubmittedTurn.cardCombination : undefined
-
-  // Proceed the turn.
+  // Put down the card combination over the layouted one.
   let newLayoutedCardCombination: CardCombination | undefined = undefined 
   if (cardCombination !== undefined) {
+    const layoutedCardCombination = getLayoutedCardCombination(newRounds)
     if (layoutedCardCombination && !canPutDownCardCombination(cardCombination, layoutedCardCombination)) {
       throw new Error('It is not a card combination that can be put down.')
     }
     // Put down the pulled out card combination.
     newLayoutedCardCombination = cardCombination
   }
+
+  // Record this result as a new turn.
   newRounds[newRounds.length - 1] = {
     ...newRounds[newRounds.length - 1],
     turns: [
@@ -180,30 +177,6 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
     ],
   }
 
-  // Set the turn to the appropriate player and proceed to the next round if necessary.
-  let newPlayerIndexOnTurn: number
-  // Did one of the last two pass?
-  const lastRound = newRounds[newRounds.length - 1]
-  if (
-    alivedPlayerIndexes.length === 2 &&
-    lastRound.turns[lastRound.turns.length - 1].cardCombination === undefined
-  ) {
-    // Proceed to the next round.
-    newRounds = [
-      ...newRounds,
-      {
-        turns: [],
-      },
-    ]
-    // Change the turn to the player who put down cards last.
-    newPlayerIndexOnTurn = alivedPlayerIndexes[0] === playerIndexOnTurn ?
-      alivedPlayerIndexes[1] : alivedPlayerIndexes[0]
-  } else {
-    // Change the turn to the next player.
-    newPlayerIndexOnTurn =
-      alivedPlayerIndexes[(alivedPlayerIndexes.indexOf(playerIndexOnTurn) + 1) % alivedPlayerIndexes.length]
-  }
-
   // Reduce the player's hand.
   if (cardCombination !== undefined) {
     let newPlayer = newPlayers[playerIndexOnTurn]
@@ -212,11 +185,10 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
       hand: removeCards(newPlayer.hand, cardCombination.cards),
     }
     // If it reaches 0, the player is out of the game.
-    const maxRanking = Math.max(...newPlayers.map(e => e.ranking))
     if (newPlayer.hand.length === 0) {
       newPlayer = {
         ...newPlayer,
-        ranking: maxRanking + 1,
+        ranking: Math.max(...newPlayers.map(e => e.ranking)) + 1,
       }
     }
     newPlayers[playerIndexOnTurn] = newPlayer
@@ -228,9 +200,48 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
       }
       newPlayers[lastPlayerIndex] = {
         ...newPlayers[lastPlayerIndex],
-        ranking: maxRanking + 2,
+        ranking: Math.max(...newPlayers.map(e => e.ranking)) + 1,
       }
     }
+  }
+
+  // Set the turn to the appropriate player and proceed to the next round if necessary.
+  let newPlayerIndexOnTurn: number | undefined
+  // A) Does the game finish?
+  if (isGameFinished({...game, players: newPlayers})) {
+    newPlayerIndexOnTurn = undefined
+  // B) Does one of the last two pass?
+  } else if (alivedPlayerIndexes.length === 2 && cardCombination === undefined) {
+    // Proceed to the next round.
+    newRounds = [
+      ...newRounds,
+      {
+        turns: [],
+      },
+    ]
+    // Change the next turn to the previous player.
+    newPlayerIndexOnTurn = alivedPlayerIndexes[0] === playerIndexOnTurn ?
+      alivedPlayerIndexes[1] : alivedPlayerIndexes[0]
+  // C) Is one of the last two out?
+  } else if (
+    alivedPlayerIndexes.length === 2 &&
+    cardCombination !== undefined &&
+    newPlayers[playerIndexOnTurn].ranking !== 0
+  ) {
+    // Proceed to the next round.
+    newRounds = [
+      ...newRounds,
+      {
+        turns: [],
+      },
+    ]
+    // Change the next turn to the previous in game and alived player.
+    newPlayerIndexOnTurn = alivedPlayerIndexes[0] === playerIndexOnTurn ?
+      alivedPlayerIndexes[1] : alivedPlayerIndexes[0]
+  } else {
+    // Change the turn to the next player.
+    newPlayerIndexOnTurn =
+      alivedPlayerIndexes[(alivedPlayerIndexes.indexOf(playerIndexOnTurn) + 1) % alivedPlayerIndexes.length]
   }
 
   return {

@@ -7,7 +7,7 @@
  *
  * Ref) https://www.30secondsofcode.org/js/s/shuffle/
  */
-export const suffleArray = <Element> (array: Element[], getRandom: () => number): Element[] => {
+export const shuffleArray = <Element> (array: Element[], getRandom: () => number): Element[] => {
   const copied = array.slice()
   let m = copied.length
   while (m) {
@@ -210,6 +210,13 @@ export const isRoundFinished = (round: Round, players: Player[]): boolean => {
   return players.length - 1 === getPassedPlayerIndexes(round).length
 }
 
+export const isGameFinished = (game: Game): boolean => {
+  if (game.players.length === 0) {
+    throw new Error('There is no player.')
+  }
+  return game.players.every(e => e.ranking > 0)
+}
+
 /**
  * @todo Joker の考慮をする。また、複数枚存在するときには、候補上は一つにする。
  * @returns The sort order is indefinite.
@@ -345,6 +352,14 @@ export const parseCardsToCardCombinations = (
     }
   }
   return combinations
+}
+
+export const getLayoutedCardCombination = (rounds: readonly Round[]): CardCombination | undefined => {
+  const lastSubmittedTurn: Turn | undefined = rounds[rounds.length - 1].turns
+    .slice()
+    .reverse()
+    .find(e => e.cardCombination)
+  return lastSubmittedTurn ? lastSubmittedTurn.cardCombination : undefined
 }
 
 /**
