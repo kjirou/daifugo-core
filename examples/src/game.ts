@@ -14,11 +14,13 @@ const stringifyCard = (card: daifugo.utils.Card): string => daifugo.utils.isJoke
 const renderGameToText = (game: daifugo.utils.Game): string => {
   let lines: string[] = []
   lines.push(`<Rounds: ${game.rounds.length}>`)
-  for (const player of game.players) {
+  for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
+    const player = game.players[playerIndex]
     lines.push(
-      `[${player.id.padStart(4, ' ')}] ` +
-      `cards=${player.hand.length.toString().padStart(2, '0')}, ` +
-      `ranking=${player.ranking}`
+      `[${player.id.padStart(4, ' ')}]` +
+      ` cards=${player.hand.length.toString().padStart(2, '0')}` +
+      `, ranking=${player.ranking}` +
+      (playerIndex === game.playerIndexOnTurn ? ' *' : '')
     )
   }
   return lines.join('\n')
