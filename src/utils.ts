@@ -210,6 +210,13 @@ export const isRoundFinished = (round: Round, players: Player[]): boolean => {
   return players.length - 1 === getPassedPlayerIndexes(round).length
 }
 
+export const isGameFinished = (game: Game): boolean => {
+  if (game.players.length === 0) {
+    throw new Error('There is no player.')
+  }
+  return game.players.every(e => e.ranking > 0)
+}
+
 /**
  * @todo Joker の考慮をする。また、複数枚存在するときには、候補上は一つにする。
  * @returns The sort order is indefinite.

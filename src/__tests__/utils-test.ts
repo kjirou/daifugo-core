@@ -1,4 +1,4 @@
-import { desideDealerAndFirstPlayer } from '..'
+import { appendPlayer, desideDealerAndFirstPlayer } from '..'
 import {
   Card,
   CardCombination,
@@ -8,8 +8,11 @@ import {
   canPutDownCardCombination,
   compareCardRankSortOrder,
   compareCardSuitSortOrder,
+  createGame,
+  createPlayer,
   expandIndexCombinations,
   isCardRankStrongerThan,
+  isGameFinished,
   isJokerCardType,
   parseCardsToCardCombinations,
   parseCardsToMultipleCardCombinations,
@@ -349,6 +352,27 @@ describe('src/utils', () => {
         expect(expected).toBe(areCardCombinationsEqual(a, b))
       })
     }
+  })
+  describe('isGameFinished', () => {
+    it('should throw an error if there is no player', () => {
+      expect(() => {
+        isGameFinished(createGame())
+      }).toThrowError(/no player/)
+    })
+    it('should return true if there is no ranking=0', () => {
+      let game = createGame()
+      game = appendPlayer(game, {...createPlayer(), id: 'a', ranking: 1})
+      game = appendPlayer(game, {...createPlayer(), id: 'b', ranking: 2})
+      game = appendPlayer(game, {...createPlayer(), id: 'c', ranking: 3})
+      expect(isGameFinished(game)).toBe(true)
+    })
+    it('should return false if there is even one player with a ranking=0', () => {
+      let game = createGame()
+      game = appendPlayer(game, {...createPlayer(), id: 'a', ranking: 1})
+      game = appendPlayer(game, {...createPlayer(), id: 'b', ranking: 0})
+      game = appendPlayer(game, {...createPlayer(), id: 'c', ranking: 2})
+      expect(isGameFinished(game)).toBe(false)
+    })
   })
   describe('parseCardsToSingleCardCombinations', () => {
     it('works', () => {

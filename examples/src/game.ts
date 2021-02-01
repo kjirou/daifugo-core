@@ -9,11 +9,6 @@ type KeypressKey = Readonly<{
 }>
 
 // TODO: Move to utils.
-const isGameFinished = (game: daifugo.utils.Game): boolean => {
-  return game.players.length > 0 && game.players.every(e => e.ranking > 0)
-}
-
-// TODO: Move to utils.
 const getLayoutedCardCombination = (rounds: readonly daifugo.utils.Round[]): daifugo.utils.CardCombination | undefined => {
   const lastSubmittedTurn: daifugo.utils.Turn | undefined = rounds[rounds.length - 1].turns
     .slice()
@@ -53,7 +48,7 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
   if (key.ctrl && key.name == 'c' || key.ctrl && key.name == 'd' || key.ctrl && key.name == 'q') {
     process.exit(0)
   }
-  if (isGameFinished(game)) {
+  if (daifugo.utils.isGameFinished(game)) {
     process.stdout.write('This game was over.\n')
     process.stdout.write(renderGameToText(game) + '\n')
     return
