@@ -1,4 +1,6 @@
-import { appendPlayer, desideDealerAndFirstPlayer } from '..'
+import {
+  appendPlayer,
+} from '..'
 import {
   Card,
   CardCombination,
