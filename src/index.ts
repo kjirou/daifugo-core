@@ -9,6 +9,7 @@ import {
   canPutDownCardCombination,
   cardRanks,
   cardSuits,
+  getLayoutedCardCombination,
   getPassedPlayerIndexes,
   isFirstGame,
   removeCards,
@@ -154,12 +155,7 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
   }
 
   // Get layouted card combination.
-  const lastSubmittedTurn: Turn | undefined = newRounds[newRounds.length - 1].turns
-    .slice()
-    .reverse()
-    .find(e => e.cardCombination)
-  const layoutedCardCombination: CardCombination | undefined =
-    lastSubmittedTurn ? lastSubmittedTurn.cardCombination : undefined
+  const layoutedCardCombination = getLayoutedCardCombination(newRounds)
 
   // Proceed the turn.
   let newLayoutedCardCombination: CardCombination | undefined = undefined 

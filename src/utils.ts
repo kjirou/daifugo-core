@@ -354,6 +354,14 @@ export const parseCardsToCardCombinations = (
   return combinations
 }
 
+export const getLayoutedCardCombination = (rounds: readonly Round[]): CardCombination | undefined => {
+  const lastSubmittedTurn: Turn | undefined = rounds[rounds.length - 1].turns
+    .slice()
+    .reverse()
+    .find(e => e.cardCombination)
+  return lastSubmittedTurn ? lastSubmittedTurn.cardCombination : undefined
+}
+
 /**
  * @todo Joker が擬態しているときに、multiple と sequence の rank の強弱判定が機能しない。
  */

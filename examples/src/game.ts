@@ -8,15 +8,6 @@ type KeypressKey = Readonly<{
   name: string,
 }>
 
-// TODO: Move to utils.
-const getLayoutedCardCombination = (rounds: readonly daifugo.utils.Round[]): daifugo.utils.CardCombination | undefined => {
-  const lastSubmittedTurn: daifugo.utils.Turn | undefined = rounds[rounds.length - 1].turns
-    .slice()
-    .reverse()
-    .find(e => e.cardCombination)
-  return lastSubmittedTurn ? lastSubmittedTurn.cardCombination : undefined
-}
-
 const stringifyCard = (card: daifugo.utils.Card): string => daifugo.utils.isJokerCardType(card)
   ? 'Joker' : `${card.suit[0]}${card.rank}`
 
@@ -58,7 +49,7 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
     }
     const playerOnTurn = game.players[game.playerIndexOnTurn]
     const cardCombinations = daifugo.utils.parseCardsToCardCombinations(playerOnTurn.hand)
-    const layouted = getLayoutedCardCombination(game.rounds)
+    const layouted = daifugo.utils.getLayoutedCardCombination(game.rounds)
     const candidates: daifugo.utils.CardCombination[] = layouted
       ? cardCombinations.filter(cardCombination => daifugo.utils.canPutDownCardCombination(cardCombination, layouted))
       : cardCombinations
