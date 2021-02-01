@@ -13,7 +13,7 @@ const stringifyCard = (card: daifugo.utils.Card): string => daifugo.utils.isJoke
 
 const renderGameToText = (game: daifugo.utils.Game): string => {
   let lines: string[] = []
-  lines.push(`<Rounds: ${game.rounds.length}>`)
+  lines.push(`<Round: ${game.rounds.length}>`)
   for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
     const player = game.players[playerIndex]
     lines.push(
@@ -41,10 +41,12 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
   if (key.ctrl && key.name == 'c' || key.ctrl && key.name == 'd' || key.ctrl && key.name == 'q') {
     process.exit(0)
   }
+  let lines: string[] = []
   if (daifugo.utils.isGameFinished(game)) {
-    process.stdout.write('This game was over.\n')
-    process.stdout.write(renderGameToText(game) + '\n')
-    return
+    lines.push('')
+    lines.push('This game was over.')
+    lines.push('')
+    lines.push(renderGameToText(game))
   } else {
     if (game.playerIndexOnTurn === undefined) {
       throw new Error('playerIndexOnTurn is undefined.')
@@ -60,18 +62,18 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
         [...candidates, undefined], Math.random)[0]
       : undefined
     if (game.rounds[game.rounds.length - 1].turns.length === 0) {
-      process.stdout.write('\n')
-      process.stdout.write(renderGameToText(game) + '\n')
-      process.stdout.write('\n')
+      lines.push('')
+      lines.push(renderGameToText(game) + '')
+      lines.push('')
     }
     if (pulledOut) {
-      process.stdout.write(
-        `${playerOnTurn.id} puts down the card(s) of [${pulledOut.cards.map(e => stringifyCard(e)).join(', ')}].\n`)
+      lines.push(`${playerOnTurn.id} puts down the card(s) of [${pulledOut.cards.map(e => stringifyCard(e)).join(', ')}].`)
     } else {
-      process.stdout.write(`${playerOnTurn.id} passes the turn.\n`)
+      lines.push(`${playerOnTurn.id} passes the turn.`)
     }
     game = daifugo.proceedTurn(game, pulledOut)
   }
+  process.stdout.write(lines.join('\n') + '\n')
 }
 
 // Settings for "keypress" module.
