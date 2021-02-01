@@ -14,7 +14,6 @@ import {
   removeCards,
   shuffleArray,
   parseCardsToCardCombinations,
-  areCardsEqual,
 } from './utils'
 
 export * as utils from './utils'
