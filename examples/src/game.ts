@@ -8,8 +8,6 @@ type KeypressKey = Readonly<{
   name: string,
 }>
 
-// TODO: suffle -> shuffle
-
 // TODO: Move to utils.
 const isGameFinished = (game: daifugo.utils.Game): boolean => {
   return game.players.length > 0 && game.players.every(e => e.ranking > 0)
@@ -42,7 +40,7 @@ const renderGameToText = (game: daifugo.utils.Game): string => {
 
 const yourId = 'you'
 const playerIds: readonly string[] =
-  daifugo.utils.suffleArray<string>([yourId, 'cpu1', 'cpu2', 'cpu3', 'cpu4'], Math.random)
+  daifugo.utils.shuffleArray<string>([yourId, 'cpu1', 'cpu2', 'cpu3', 'cpu4'], Math.random)
 const yourPlayerIndex = playerIds.indexOf(yourId)
 
 let game = daifugo.utils.createGame()
@@ -70,7 +68,7 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
       ? cardCombinations.filter(cardCombination => daifugo.utils.canPutDownCardCombination(cardCombination, layouted))
       : cardCombinations
     const pulledOut: daifugo.utils.CardCombination | undefined = candidates.length > 0
-      ? daifugo.utils.suffleArray<daifugo.utils.CardCombination | undefined>(
+      ? daifugo.utils.shuffleArray<daifugo.utils.CardCombination | undefined>(
         [...candidates, undefined], Math.random)[0]
       : undefined
     if (game.rounds[game.rounds.length - 1].turns.length === 0) {

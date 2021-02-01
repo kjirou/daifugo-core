@@ -7,7 +7,7 @@
  *
  * Ref) https://www.30secondsofcode.org/js/s/shuffle/
  */
-export const suffleArray = <Element> (array: Element[], getRandom: () => number): Element[] => {
+export const shuffleArray = <Element> (array: Element[], getRandom: () => number): Element[] => {
   const copied = array.slice()
   let m = copied.length
   while (m) {

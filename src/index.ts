@@ -12,7 +12,7 @@ import {
   getPassedPlayerIndexes,
   isFirstGame,
   removeCards,
-  suffleArray,
+  shuffleArray,
   parseCardsToCardCombinations,
   areCardsEqual,
 } from './utils'
@@ -65,7 +65,7 @@ export const resetStock = (game: Game): Game => {
   }
   return {
     ...game,
-    stock: suffleArray<Card>(stock, game.settings.getRandom),
+    stock: shuffleArray<Card>(stock, game.settings.getRandom),
   }
 }
 
