@@ -27,14 +27,20 @@ const renderGameToText = (game: daifugo.utils.Game): string => {
 }
 
 const yourId = 'you'
-const playerIds: readonly string[] =
-  daifugo.utils.shuffleArray<string>([yourId, 'cpu1', 'cpu2', 'cpu3', 'cpu4'], Math.random)
+const playerIds: readonly string[] = [yourId, 'cpu1', 'cpu2', 'cpu3', 'cpu4']
 const yourPlayerIndex = playerIds.indexOf(yourId)
 
 let game = daifugo.utils.createGame()
 game = playerIds.reduce((acc, id) => daifugo.appendPlayer(acc, {...daifugo.utils.createPlayer(), id}), game)
 game = daifugo.resetStock(game)
 game = daifugo.desideDealerAndFirstPlayer(game)
+// TODO: 上の関数がまだ未完成なため。
+const dealerIndex = Math.floor(Math.random() * 5)
+game = {
+  ...game,
+  dealerIndex,
+  playerIndexOnTurn: dealerIndex,
+}
 game = daifugo.dealCards(game)
 
 const handleKeypress = (ch: string, key: KeypressKey): void => {
