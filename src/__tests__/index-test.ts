@@ -12,6 +12,7 @@ import {
   areCardsEqual,
   createGame,
   createPlayer,
+  isGameFinished,
 } from '../utils'
 
 describe('src/index', () => {
@@ -344,7 +345,7 @@ describe('src/index', () => {
         })
       })
     })
-    describe('when two players remain in the game and one player is out', () => {
+    describe('when two players remain in the game', () => {
       const playerIndexOnTurn = 0
       beforeEach(() => {
         game = {
@@ -370,16 +371,34 @@ describe('src/index', () => {
           ],
           playerIndexOnTurn,
         }
-        game = proceedTurn(game, {
-          category: 'single',
-          cards: [{isJoker: false, suit: 'spade', rank: '3'}],
+      })
+      describe('when one player is out', () => {
+        beforeEach(() => {
+          game = proceedTurn(game, {
+            category: 'single',
+            cards: [{isJoker: false, suit: 'spade', rank: '3'}],
+          })
+        })
+        it('should set the next ranking for the player who is out', () => {
+          expect(game.players[playerIndexOnTurn].ranking).toBe(3)
+        })
+        it('should finish the game', () => {
+          expect(isGameFinished(game)).toBe(true)
+        })
+        it('should not specify the next player', () => {
+          expect(game.playerIndexOnTurn).toBe(undefined)
         })
       })
-      it('should set the next ranking for the player who is out', () => {
-        expect(game.players[playerIndexOnTurn].ranking).toBe(3)
-      })
-      it('should finish the game', () => {
-        expect(game.players.every(e => e.ranking !== 0)).toBe(true)
+      describe('when one player passes', () => {
+        beforeEach(() => {
+          game = proceedTurn(game, undefined)
+        })
+        it('should not finish the game', () => {
+          expect(isGameFinished(game)).toBe(false)
+        })
+        it('should change the turn to another player', () => {
+          expect(game.playerIndexOnTurn).toBe(1)
+        })
       })
     })
   })
