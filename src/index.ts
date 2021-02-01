@@ -154,18 +154,18 @@ export const proceedTurn = (game: Game, cardCombination: CardCombination | undef
     }
   }
 
-  // Get layouted card combination.
-  const layoutedCardCombination = getLayoutedCardCombination(newRounds)
-
-  // Proceed the turn.
+  // Put down the card combination over the layouted one.
   let newLayoutedCardCombination: CardCombination | undefined = undefined 
   if (cardCombination !== undefined) {
+    const layoutedCardCombination = getLayoutedCardCombination(newRounds)
     if (layoutedCardCombination && !canPutDownCardCombination(cardCombination, layoutedCardCombination)) {
       throw new Error('It is not a card combination that can be put down.')
     }
     // Put down the pulled out card combination.
     newLayoutedCardCombination = cardCombination
   }
+
+  // Record this result as a new turn.
   newRounds[newRounds.length - 1] = {
     ...newRounds[newRounds.length - 1],
     turns: [
