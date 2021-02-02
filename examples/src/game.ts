@@ -8,10 +8,10 @@ type KeypressKey = Readonly<{
   name: string,
 }>
 
-const stringifyCard = (card: daifugo.utils.Card): string => daifugo.utils.isJokerCardType(card)
+const stringifyCard = (card: daifugo.Card): string => daifugo.isJokerCardType(card)
   ? 'Joker' : `${card.suit[0]}${card.rank}`
 
-const renderGameToText = (game: daifugo.utils.Game): string => {
+const renderGameToText = (game: daifugo.Game): string => {
   let lines: string[] = []
   lines.push(`<Round: ${game.rounds.length}>`)
   for (let playerIndex = 0; playerIndex < game.players.length; playerIndex++) {
@@ -30,8 +30,8 @@ const yourId = 'you'
 const playerIds: readonly string[] = [yourId, 'cpu1', 'cpu2', 'cpu3', 'cpu4']
 const yourPlayerIndex = playerIds.indexOf(yourId)
 
-let game = daifugo.utils.createGame()
-game = playerIds.reduce((acc, id) => daifugo.appendPlayer(acc, {...daifugo.utils.createPlayer(), id}), game)
+let game = daifugo.createGame()
+game = playerIds.reduce((acc, id) => daifugo.appendPlayer(acc, {...daifugo.createPlayer(), id}), game)
 game = daifugo.resetStock(game)
 game = daifugo.desideDealerAndFirstPlayer(game)
 // TODO: 上の関数がまだ未完成なため。
@@ -48,7 +48,7 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
     process.exit(0)
   }
   let lines: string[] = []
-  if (daifugo.utils.isGameFinished(game)) {
+  if (daifugo.isGameFinished(game)) {
     lines.push('')
     lines.push('This game was over.')
     lines.push('')
@@ -58,13 +58,13 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
       throw new Error('playerIndexOnTurn is undefined.')
     }
     const playerOnTurn = game.players[game.playerIndexOnTurn]
-    const cardCombinations = daifugo.utils.parseCardsToCardCombinations(playerOnTurn.hand)
-    const layouted = daifugo.utils.getLayoutedCardCombination(game.rounds)
-    const candidates: daifugo.utils.CardCombination[] = layouted
-      ? cardCombinations.filter(cardCombination => daifugo.utils.canPutDownCardCombination(cardCombination, layouted))
+    const cardCombinations = daifugo.parseCardsToCardCombinations(playerOnTurn.hand)
+    const layouted = daifugo.getLayoutedCardCombination(game.rounds)
+    const candidates: daifugo.CardCombination[] = layouted
+      ? cardCombinations.filter(cardCombination => daifugo.canPutDownCardCombination(cardCombination, layouted))
       : cardCombinations
-    const pulledOut: daifugo.utils.CardCombination | undefined = candidates.length > 0
-      ? daifugo.utils.shuffleArray<daifugo.utils.CardCombination | undefined>(
+    const pulledOut: daifugo.CardCombination | undefined = candidates.length > 0
+      ? daifugo.shuffleArray<daifugo.CardCombination | undefined>(
         [...candidates, undefined], Math.random)[0]
       : undefined
     if (game.rounds[game.rounds.length - 1].turns.length === 0) {

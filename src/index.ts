@@ -18,7 +18,7 @@ import {
   isGameFinished,
 } from './utils'
 
-export * as utils from './utils'
+export * from './utils'
 
 
 //
