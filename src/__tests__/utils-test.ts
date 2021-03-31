@@ -377,26 +377,61 @@ describe('src/utils', () => {
     })
   })
   describe('parseCardsToSingleCardCombinations', () => {
-    it('works', () => {
-      const cards: NotJokerCard[] = [
-        {isJoker: false, suit: 'spade', rank: '3'},
-        {isJoker: false, suit: 'heart', rank: '13'},
-      ]
-      expect(parseCardsToSingleCardCombinations(cards)).toEqual([
-        {
-          category: 'single',
-          cards: [
-            {isJoker: false, suit: 'spade', rank: '3'},
-          ],
-        },
-        {
-          category: 'single',
-          cards: [
-            {isJoker: false, suit: 'heart', rank: '13'},
-          ],
-        },
-      ])
-    })
+    const testCases: {
+      name: string,
+      cards: NotJokerCard[],
+      includesJoker: boolean,
+      expected: CardCombination[],
+    }[] = [
+      {
+        name: 'should return the same number of combinations as the number of cards',
+        cards: [
+          {isJoker: false, suit: 'spade', rank: '3'},
+          {isJoker: false, suit: 'club', rank: '3'},
+        ],
+        includesJoker: false,
+        expected: [
+          {
+            category: 'single',
+            cards: [
+              {isJoker: false, suit: 'spade', rank: '3'},
+            ],
+          },
+          {
+            category: 'single',
+            cards: [
+              {isJoker: false, suit: 'club', rank: '3'},
+            ],
+          },
+        ],
+      },
+      {
+        name: 'can append a joker',
+        cards: [
+          {isJoker: false, suit: 'spade', rank: '3'},
+        ],
+        includesJoker: true,
+        expected: [
+          {
+            category: 'single',
+            cards: [
+              {isJoker: false, suit: 'spade', rank: '3'},
+            ],
+          },
+          {
+            category: 'single',
+            cards: [
+              {isJoker: true},
+            ],
+          },
+        ],
+      },
+    ]
+    for (const {name, cards, includesJoker, expected} of testCases) {
+      it(name, () => {
+        expect(parseCardsToSingleCardCombinations(cards, includesJoker)).toEqual(expected)
+      })
+    }
   })
   describe('parseCardsToMultipleCardCombinations', () => {
     const testCases: {

@@ -218,15 +218,20 @@ export const isGameFinished = (game: Game): boolean => {
 }
 
 /**
- * @todo Joker の考慮をする。また、複数枚存在するときには、候補上は一つにする。
  * @returns The sort order is indefinite.
  */
-export const parseCardsToSingleCardCombinations = (sortedCards: readonly NotJokerCard[]): CardCombination[] => {
+export const parseCardsToSingleCardCombinations = (sortedCards: readonly NotJokerCard[], includesJoker: boolean): CardCombination[] => {
   const combinations: CardCombination[] = []
   for (const card of sortedCards) {
     combinations.push({
       category: 'single',
       cards: [card],
+    })
+  }
+  if (includesJoker) {
+    combinations.push({
+      category: 'single',
+      cards: [{isJoker: true}],
     })
   }
   return combinations
@@ -337,7 +342,7 @@ export const parseCardsToCardCombinations = (
   const sortedNotJokerCards: NotJokerCard[] = cards.slice()
     .filter(e => !isJokerCardType(e)).map(e => e as NotJokerCard)
   if (options.categories.indexOf('single') !== -1) {
-    for (const e of parseCardsToSingleCardCombinations(sortedNotJokerCards)) {
+    for (const e of parseCardsToSingleCardCombinations(sortedNotJokerCards, false)) {
       combinations.push(e)
     }
   }
