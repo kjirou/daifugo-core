@@ -64,8 +64,7 @@ const handleKeypress = (ch: string, key: KeypressKey): void => {
       ? cardCombinations.filter(cardCombination => daifugo.canPutDownCardCombination(cardCombination, layouted))
       : cardCombinations
     const pulledOut: daifugo.CardCombination | undefined = candidates.length > 0
-      ? daifugo.shuffleArray<daifugo.CardCombination | undefined>(
-        [...candidates, undefined], Math.random)[0]
+      ? daifugo.shuffleArray<daifugo.CardCombination>(candidates, Math.random)[0]
       : undefined
     if (game.rounds[game.rounds.length - 1].turns.length === 0) {
       lines.push('')
